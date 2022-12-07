@@ -6,6 +6,13 @@ interface mgrLike {
     function rely(address _addr) external;
     function file(bytes32 _name, address _addr) external;
     function deny(address _addr) external;
+    function dai() external view returns (address);
+}
+
+interface RootLike {
+    function rely(address _addr) external;
+    function deny(address _addr) external;
+    function relyContract(address _addr, address _contract) external;
 }
 
 contract MgrSpell {
@@ -45,13 +52,13 @@ contract MgrSpell {
 
     function cast() public {
         require(!spellCast, "The spell has already been cast.");
-        
-
         run();
         spellCast = true;
     }
 
     function run() private {
+
+
         // Rely the MCD_PAUSE_PROXY contract on the managers
         console.log("1");
         mgrLike(BTPoolMgr1).rely(MCD_PAUSE_PROXY);
@@ -59,18 +66,6 @@ contract MgrSpell {
         mgrLike(BTPoolMgr2).rely(MCD_PAUSE_PROXY);
         mgrLike(BTPoolMgr3).rely(MCD_PAUSE_PROXY);
         mgrLike(BTPoolMgr4).rely(MCD_PAUSE_PROXY);
-
-        // File the urns on the managers
-        mgrLike(BTPoolMgr1).file("urn", urn1);
-        mgrLike(BTPoolMgr2).file("urn", urn2);
-        mgrLike(BTPoolMgr3).file("urn", urn3);
-        mgrLike(BTPoolMgr4).file("urn", urn4);
-
-        // Deny the tinlake multisig address on the managers
-        mgrLike(BTPoolMgr1).deny(tinlakeMultisig);
-        mgrLike(BTPoolMgr2).deny(tinlakeMultisig);
-        mgrLike(BTPoolMgr3).deny(tinlakeMultisig);
-        mgrLike(BTPoolMgr4).deny(tinlakeMultisig);
 
         // Deny the root of each pool on the managers
         mgrLike(BTPoolMgr1).deny(poolRoot1);
